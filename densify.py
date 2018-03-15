@@ -15,8 +15,8 @@ except ImportError:
         print("Couldn't find geographiclib python package")
 
 # set default values
-inLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\testMultiLine.shp"
-outLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\outtestMultiLine.shp"
+inLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\testMultiPoly.shp"
+outLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\outtestMultiPoly.shp"
 outPath = os.path.dirname(outLayer)
 outLayerName = os.path.basename(outLayer)
 ellipsoid_a = 6378137.0
@@ -54,147 +54,147 @@ wgs84Sr = arcpy.SpatialReference(4326)
 geod = Geodesic(ellipsoid_a, 1 / ellipsoid_f)
 
 
-def densifyPoint(inLayer, outLayer, spacing, pointTypeField):
+def densify_point(in_layer, out_layer, spacing, point_type_field):
     counter = 0
-    currentPoint = arcpy.Point()
-    inFieldNames = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(inLayer)]
-    outFieldNames = inFieldNames[:]
-    outFieldNames.append(pointTypeField)
-    geomFieldIndex = inFieldNames.index('SHAPE@')
+    current_point = arcpy.Point()
+    in_field_names = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(in_layer)]
+    out_field_names = in_field_names[:]
+    out_field_names.append(point_type_field)
+    geom_field_index = in_field_names.index('SHAPE@')
     # cursor to write output layer
-    cur = arcpy.da.InsertCursor(outLayer, "*")
+    cur = arcpy.da.InsertCursor(out_layer, "*")
     # loop through the features and retrieve [X,Y]
-    with arcpy.da.SearchCursor(inLayer, inFieldNames) as cursor:
+    with arcpy.da.SearchCursor(in_layer, in_field_names) as cursor:
         for row in cursor:
             # this is the first point
             if counter == 0:
                 # get the point geometry
-                ptGeom = row[geomFieldIndex]
-                point = ptGeom.getPart()
+                pt_geom = row[geom_field_index]
+                point = pt_geom.getPart()
                 # save point geometry for later
-                currentPoint.X = point.X
-                currentPoint.Y = point.Y
+                current_point.X = point.X
+                current_point.Y = point.Y
                 # write to output layer
-                rowList = list(row)
-                rowList.append('Original')
-                row = tuple(rowList)
+                row_list = list(row)
+                row_list.append('Original')
+                row = tuple(row_list)
                 cur.insertRow(row)
 
             # This is for subsequent points
             elif counter > 0:
-                startPt = currentPoint
-                endPtGeom = row[geomFieldIndex]
-                endPt = endPtGeom.getPart()
+                start_pt = current_point
+                end_pt_geom = row[geom_field_index]
+                end_pt = end_pt_geom.getPart()
                 # project to WGS84 if needed
                 if inSr.factoryCode != wgs84Sr.factoryCode:
-                    startPtGeom = arcpy.PointGeometry(startPt, inSr)
-                    startPt = startPtGeom.projectAs(wgs84Sr).getPart()
-                    endPtGeom = endPtGeom.projectAs(wgs84Sr)
-                    endPt = endPtGeom.getPart()
+                    start_pt_geom = arcpy.PointGeometry(start_pt, inSr)
+                    start_pt = start_pt_geom.projectAs(wgs84Sr).getPart()
+                    end_pt_geom = end_pt_geom.projectAs(wgs84Sr)
+                    end_pt = end_pt_geom.getPart()
                 # create a geographiclib line object
-                lineObject = geod.InverseLine(startPt.Y, startPt.X, endPt.Y, endPt.X)
+                line_object = geod.InverseLine(start_pt.Y, start_pt.X, end_pt.Y, end_pt.X)
                 # determine how many densified segments there will be
-                n = int(math.ceil(lineObject.s13 / spacing))
+                n = int(math.ceil(line_object.s13 / spacing))
                 # adjust the spacing distance
-                seglen = lineObject.s13 / n
+                seglen = line_object.s13 / n
                 for i in range(1, n):
                     if i > 0:
                         s = seglen * i
-                        g = lineObject.Position(s,
-                                                Geodesic.LATITUDE |
-                                                Geodesic.LONGITUDE |
-                                                Geodesic.LONG_UNROLL)
+                        g = line_object.Position(s,
+                                                 Geodesic.LATITUDE |
+                                                 Geodesic.LONGITUDE |
+                                                 Geodesic.LONG_UNROLL)
                         point = arcpy.Point(g['lon2'], g['lat2'])
-                        currentPoint.X = point.X
-                        currentPoint.Y = point.Y
+                        current_point.X = point.X
+                        current_point.Y = point.Y
                         # Convert each point back to the input CRS
                         if inSr.factoryCode != wgs84Sr.factoryCode:
-                            ptGeom = arcpy.PointGeometry(point, wgs84Sr)
-                            point = ptGeom.projectAs(inSr).getPart()
+                            pt_geom = arcpy.PointGeometry(point, wgs84Sr)
+                            point = pt_geom.projectAs(inSr).getPart()
                         # write to output layer
-                        rowList = list(row)
-                        rowList.append("Densified")
-                        rowList[geomFieldIndex] = point
-                        outRow = tuple(rowList)
-                        cur.insertRow(outRow)
-                ptGeom = row[geomFieldIndex].getPart()
-                currentPoint.X = ptGeom.X
-                currentPoint.Y = ptGeom.Y
+                        row_list = list(row)
+                        row_list.append("Densified")
+                        row_list[geom_field_index] = point
+                        out_row = tuple(row_list)
+                        cur.insertRow(out_row)
+                pt_geom = row[geom_field_index].getPart()
+                current_point.X = pt_geom.X
+                current_point.Y = pt_geom.Y
                 # write to output layer
-                rowList = list(row)
-                rowList.append('Original')
-                row = tuple(rowList)
+                row_list = list(row)
+                row_list.append('Original')
+                row = tuple(row_list)
                 cur.insertRow(row)
             counter += 1
     if cur:
         del cur
 
 
-def densifyPoly(inLayer, outLayer, spacing):
+def densify_poly(in_layer, out_layer, spacing):
     # loop through the features
-    fieldNames = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(inLayer)]
-    geomFieldIndex = fieldNames.index('SHAPE@')
-    with arcpy.da.SearchCursor(inLayer, fieldNames) as cursor:
+    field_names = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(in_layer)]
+    geom_field_index = field_names.index('SHAPE@')
+    with arcpy.da.SearchCursor(in_layer, field_names) as cursor:
         for row in cursor:
-            # create array to hold densified points
-            pointArray = arcpy.Array()
-            partCount = row[geomFieldIndex].partCount
-            for i in range(0, partCount):
+            part_count = row[geom_field_index].partCount
+            for i in range(0, part_count):
+                # create array to hold densified points
+                point_array = arcpy.Array()
                 # get the geometry
-                part = row[geomFieldIndex].getPart(i)
-                pointCount = len(part)
-                startPt = part[0]
+                part = row[geom_field_index].getPart(i)
+                point_count = len(part)
+                start_pt = part[0]
                 # project to WGS84 if needed
                 if inSr.factoryCode != wgs84Sr.factoryCode:
-                    startPtGeom = arcpy.PointGeometry(startPt, inSr)
-                    startPt = startPtGeom.projectAs(wgs84Sr).getPart()
-                pointArray.add(startPt)
+                    start_pt_geom = arcpy.PointGeometry(start_pt, inSr)
+                    start_pt = start_pt_geom.projectAs(wgs84Sr).getPart()
+                point_array.add(start_pt)
                 # loop through the line segments
-                for j in range(1, pointCount):
-                    endPt = part[j]
+                for j in range(1, point_count):
+                    end_pt = part[j]
                     # project to WGS84 if needed
                     if inSr.factoryCode != wgs84Sr.factoryCode:
-                        endPtGeom = arcpy.PointGeometry(endPt, inSr)
-                        endPt = endPtGeom.projectAs(wgs84Sr).getPart()
+                        end_pt_geom = arcpy.PointGeometry(end_pt, inSr)
+                        end_pt = end_pt_geom.projectAs(wgs84Sr).getPart()
                     # create a geographiclib line object
-                    lineObject = geod.InverseLine(startPt.Y, startPt.X, endPt.Y, endPt.X)
+                    line_object = geod.InverseLine(start_pt.Y, start_pt.X, end_pt.Y, end_pt.X)
                     # determine how many densified segments there will be
-                    n = int(math.ceil(lineObject.s13 / spacing))
-                    if lineObject.s13 > spacing:
-                        seglen = lineObject.s13 / n
+                    n = int(math.ceil(line_object.s13 / spacing))
+                    if line_object.s13 > spacing:
+                        seglen = line_object.s13 / n
                         for k in range(1, n):
                             s = seglen * k
-                            g = lineObject.Position(s,
-                                                    Geodesic.LATITUDE |
-                                                    Geodesic.LONGITUDE |
-                                                    Geodesic.LONG_UNROLL)
+                            g = line_object.Position(s,
+                                                     Geodesic.LATITUDE |
+                                                     Geodesic.LONGITUDE |
+                                                     Geodesic.LONG_UNROLL)
                             point = arcpy.Point(g['lon2'], g['lat2'])
                             # add densified points to output array
-                            pointArray.add(point)
+                            point_array.add(point)
 
                     # Convert last point back to the input CRS if needed
                     if inSr.factoryCode != wgs84Sr.factoryCode:
-                        endPtGeom = arcpy.PointGeometry(endPt, wgs84Sr)
-                        endPt = endPtGeom.projectAs(inSr).getPart()
+                        end_pt_geom = arcpy.PointGeometry(end_pt, wgs84Sr)
+                        end_pt = end_pt_geom.projectAs(inSr).getPart()
                     # add the last point to the output array
-                    pointArray.add(endPt)
-                    startPt = endPt
-            # Convert each point back to the input CRS if needed
-            if inSr.factoryCode != wgs84Sr.factoryCode:
-                for i in range(len(pointArray)):
-                    ptGeom = arcpy.PointGeometry(pointArray[i], wgs84Sr)
-                    pointArray[i] = ptGeom.projectAs(inSr).getPart()
-            # cursor to write output layer
-            cur = arcpy.da.InsertCursor(outLayer, fieldNames)
-            if len(pointArray) > 0:
-                # write output point array to output layer
-                rowList = list(row)
-                if create_polygon:
-                    rowList[geomFieldIndex] = arcpy.Polygon(pointArray)
-                elif create_polyline:
-                    rowList[geomFieldIndex] = arcpy.Polyline(pointArray)
-                outRow = tuple(rowList)
-                cur.insertRow(outRow)
+                    point_array.add(end_pt)
+                    start_pt = end_pt
+                # Convert each point back to the input CRS if needed
+                if inSr.factoryCode != wgs84Sr.factoryCode:
+                    for k in range(len(point_array)):
+                        pt_geom = arcpy.PointGeometry(point_array[k], wgs84Sr)
+                        point_array[k] = pt_geom.projectAs(inSr).getPart()
+                # cursor to write output layer
+                cur = arcpy.da.InsertCursor(out_layer, field_names)
+                if len(point_array) > 0:
+                    # write output point array to output layer
+                    row_list = list(row)
+                    if create_polygon:
+                        row_list[geom_field_index] = arcpy.Polygon(point_array)
+                    elif create_polyline:
+                        row_list[geom_field_index] = arcpy.Polyline(point_array)
+                    out_row = tuple(row_list)
+                    cur.insertRow(out_row)
 
 
 # get input geometry type
@@ -221,25 +221,22 @@ if desc.featureType == "Simple" and desc.datasetType == "FeatureClass":
                 break
         arcpy.AddField_management(outLayer, pointTypeField, "TEXT", field_length=50)
 
-        # new field list
-        fields = arcpy.ListFields(inLayer)
-
         # run the densification
-        densifyPoint(inLayer, outLayer, spacing, pointTypeField)
+        densify_point(inLayer, outLayer, spacing, pointTypeField)
 
     elif desc.shapeType == 'Polyline':
         print("Input is Polyline Type: processing")
         create_polyline = True
         arcpy.CreateFeatureclass_management(outPath, outLayerName, "POLYLINE", inLayer, spatial_reference=inSr)
         print("created output: " + outLayer)
-        densifyPoly(inLayer, outLayer, spacing)
+        densify_poly(inLayer, outLayer, spacing)
 
     elif desc.shapeType == 'Polygon':
         print("Input is Polygon Type: processing")
         create_polygon = True
         arcpy.CreateFeatureclass_management(outPath, outLayerName, "POLYGON", inLayer, spatial_reference=inSr)
         print("created output: " + outLayer)
-        densifyPoly(inLayer, outLayer, spacing)
+        densify_poly(inLayer, outLayer, spacing)
 else:
     print("Tool only works with simple features (point/polyline/polygon")
 print("finished processing")

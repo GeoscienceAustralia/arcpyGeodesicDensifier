@@ -15,10 +15,12 @@ except ImportError:
         print("Couldn't find geographiclib python package")
 
 # set default values
-inLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\testMultiPoly.shp"
-outLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\outtestMultiPoly.shp"
-outPath = os.path.dirname(outLayer)
-outLayerName = os.path.basename(outLayer)
+in_layer = arcpy.GetParameterAsText(0)
+out_path = r'in_memory'
+#inLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\testMultiPoly.shp"
+#outLayer = r"C:\Users\Jonah\PycharmProjects\arcpy_densifier\testData\outtestMultiPoly.shp"
+#outPath = os.path.dirname(outLayer)
+#outLayerName = os.path.basename(outLayer)
 ellipsoid_a = 6378137.0
 ellipsoid_f = 298.2572236
 ellipsoid_name = 'WGS84'
@@ -33,7 +35,7 @@ if arcpy.Exists(outLayer):
         print(e.args[0])
 
 
-print("inLayer: " + inLayer)
+print("inLayer: " + in_layer)
 
 # default point spacing is 900
 spacing = 900
@@ -47,7 +49,7 @@ ellipsoid_dict = {'165': [6378165.000, 298.3],
                   'International 1924': [6378388, 297]}
 
 # get spatial reference
-inSr = arcpy.Describe(inLayer).spatialReference
+inSr = arcpy.Describe(in_layer).spatialReference
 wgs84Sr = arcpy.SpatialReference(4326)
 
 # Create a geographiclib Geodesic object
@@ -200,19 +202,18 @@ def densify_poly(in_layer, out_layer, spacing):
 # get input geometry type
 create_polyline = False
 create_polygon = False
-desc = arcpy.Describe(inLayer)
+desc = arcpy.Describe(in_layer)
 if desc.featureType == "Simple" and desc.datasetType == "FeatureClass":
 
     if desc.shapeType == 'Point':
         print("Input is Point Type")
-        # create and add to map canvas a point memory layer
-        # layer_name = "Densified Point " + str(ellipsoid_name) + " " + str(spacing) + "m"
+        # create a point memory layer
+        out_layer_name = "Densified_Point_" + str(ellipsoid_name) + "_" + str(spacing) + "m"
         # create output layer
-        arcpy.CreateFeatureclass_management(outPath, outLayerName, "POINT", inLayer, spatial_reference=inSr)
+        arcpy.CreateFeatureclass_management(out_path, out_layer_name, "POINT", in_layer, spatial_reference=inSr)
 
         # add field for pointType (original or densified)
-        # get the field list
-        fields = arcpy.ListFields(inLayer)
+        fields = arcpy.ListFields(in_layer)
         fieldNameList = [field.name for field in fields]
         pointTypeField = ''
         for fieldName in ["pointType", "pntType", "pntTyp"]:
@@ -222,21 +223,31 @@ if desc.featureType == "Simple" and desc.datasetType == "FeatureClass":
         arcpy.AddField_management(outLayer, pointTypeField, "TEXT", field_length=50)
 
         # run the densification
-        densify_point(inLayer, outLayer, spacing, pointTypeField)
+        densify_point(in_layer, outLayer, spacing, pointTypeField)
 
     elif desc.shapeType == 'Polyline':
         print("Input is Polyline Type: processing")
         create_polyline = True
-        arcpy.CreateFeatureclass_management(outPath, outLayerName, "POLYLINE", inLayer, spatial_reference=inSr)
+        # create a polyline memory layer
+        out_layer_name = "Densified_Polyline_" + str(ellipsoid_name) + "_" + str(spacing) + "m"
+        arcpy.CreateFeatureclass_management(out_path, out_layer_name, "POLYLINE", in_layer, spatial_reference=inSr)
         print("created output: " + outLayer)
-        densify_poly(inLayer, outLayer, spacing)
+        densify_poly(in_layer, outLayer, spacing)
 
     elif desc.shapeType == 'Polygon':
         print("Input is Polygon Type: processing")
         create_polygon = True
-        arcpy.CreateFeatureclass_management(outPath, outLayerName, "POLYGON", inLayer, spatial_reference=inSr)
+        # create a polygon memory layer
+        out_layer_name = "Densified_Polygon_" + str(ellipsoid_name) + "_" + str(spacing) + "m"
+        arcpy.CreateFeatureclass_management(out_path, out_layer_name, "POLYGON", in_layer, spatial_reference=inSr)
         print("created output: " + outLayer)
-        densify_poly(inLayer, outLayer, spacing)
+        densify_poly(in_layer, outLayer, spacing)
 else:
-    print("Tool only works with simple features (point/polyline/polygon")
+    print("Tool only works with simple features (point/polyline/polygon)")
+
+# add memory layer to map TOC
+mxd = arcpy.mapping.MapDocument("CURRENT")
+data_frame = arcpy.mapping.ListDataFrames(mxd)[0]
+layer = arcpy.mapping.Layer(os.path.join(out_path, out_layer_name))
+arcpy.mapping.AddLayer(data_frame, layer, "AUTO_ARRANGE")
 print("finished processing")

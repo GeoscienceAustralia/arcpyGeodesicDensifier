@@ -34,10 +34,9 @@ class GeodesicDensification(object):
         in_ellipsoid_name = arcpy.Parameter(
             displayName="Input Ellipsoid",
             name="in_ellipsoid_name",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
-            direction="Input",
-            multiValue=True)
+            direction="Input")
         in_ellipsoid_name.value = "WGS84"
         in_ellipsoid_name.filter.type = "ValueList"
         in_ellipsoid_name.filter.list = ['165',
@@ -50,7 +49,7 @@ class GeodesicDensification(object):
         params.append(in_ellipsoid_name)
                                     
         in_spacing = arcpy.Parameter(
-            displayName="Maximum Point Spacing",
+            displayName="Maximum Point Spacing (m)",
             name="in_spacing",
             datatype="String",
             parameterType="Required",
@@ -90,16 +89,14 @@ class GeodesicDensification(object):
             try:
                 from geographiclib.geodesic import Geodesic
             except ImportError:
-                messages.addMessage("Couldn't find geographiclib python package")
+                messages.addMessage("Couldn't find geographiclib python package. Try installing with the following command in your python console: ")
+                messages.addMessage("import pip; pip.main(['install','geographiclib'])")
 
         # set default values
         in_layer = parameters[0].valueAsText
         in_ellipsoid_name = parameters[1].valueAsText
         spacing = parameters[2].valueAsText
         out_path = r'in_memory'
-        ellipsoid_a = 6378137.0
-        ellipsoid_f = 298.2572236
-
         messages.addMessage("inLayer: " + in_layer)
 
         # set ellipsoid parameters
@@ -243,20 +240,14 @@ class GeodesicDensification(object):
                                     point = arcpy.Point(g['lon2'], g['lat2'])
                                     # add densified points to output array
                                     point_array.add(point)
-
-                            # Convert last point back to the input CRS if needed
-                            if inSr.factoryCode != wgs84Sr.factoryCode:
-                                end_pt_geom = arcpy.PointGeometry(end_pt, wgs84Sr)
-                                end_pt = end_pt_geom.projectAs(inSr).getPart()
                             # add the last point to the output array
                             point_array.add(end_pt)
                             start_pt = end_pt
                         # Convert each point back to the input CRS if needed
                         if inSr.factoryCode != wgs84Sr.factoryCode:
-                            for k in range(len(point_array)):
-                                pt_geom = arcpy.PointGeometry(point_array[k], wgs84Sr)
-                                point_array[k] = pt_geom.projectAs(inSr).getPart()
-                        messages.addMessage("densified point count: " + str(len(point_array)))
+                            for l in range(len(point_array)):
+                                pt_geom = arcpy.PointGeometry(point_array[l], wgs84Sr)
+                                point_array.replace(l, pt_geom.projectAs(inSr).getPart())
                         # cursor to write output layer
                         cur = arcpy.da.InsertCursor(out_layer, field_names)
                         if len(point_array) > 0:
@@ -268,6 +259,7 @@ class GeodesicDensification(object):
                                 row_list[geom_field_index] = arcpy.Polyline(point_array)
                             out_row = tuple(row_list)
                             cur.insertRow(out_row)
+            arcpy.GetMessages()
 
 
         # get input geometry type
@@ -279,7 +271,7 @@ class GeodesicDensification(object):
             if desc.shapeType == 'Point':
                 print("Input is Point Type")
                 # create a point memory layer
-                out_layer_name = "Densified_Point_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
+                out_layer_name = str(in_layer) + "_Densified_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
                 messages.addMessage("Output Layer Name: " + out_layer_name)
                 out_layer_path = os.path.join(out_path, out_layer_name)
                 # create output layer
@@ -302,7 +294,7 @@ class GeodesicDensification(object):
                 print("Input is Polyline Type: processing")
                 create_polyline = True
                 # create a polyline memory layer
-                out_layer_name = "Densified_Polyline_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
+                out_layer_name = str(in_layer) + "_Densified_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
                 messages.addMessage("Output Layer Name: " + out_layer_name)
                 out_layer_path = os.path.join(out_path, out_layer_name)
                 arcpy.CreateFeatureclass_management(out_path, out_layer_name, "POLYLINE", in_layer, spatial_reference=inSr)
@@ -312,7 +304,7 @@ class GeodesicDensification(object):
                 print("Input is Polygon Type: processing")
                 create_polygon = True
                 # create a polygon memory layer
-                out_layer_name = "Densified_Polygon_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
+                out_layer_name = str(in_layer) + "_Densified_" + str(in_ellipsoid_name) + "_" + str(int(spacing)) + "m"
                 messages.addMessage("Output Layer Name: " + out_layer_name)
                 out_layer_path = os.path.join(out_path, out_layer_name)
                 arcpy.CreateFeatureclass_management(out_path, out_layer_name, "POLYGON", in_layer, spatial_reference=inSr)

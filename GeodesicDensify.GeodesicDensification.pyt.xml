@@ -1,1 +1,55 @@
-<metadata xml:lang="en"><Esri><CreaDate>20180315</CreaDate><CreaTime>12560300</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><ModDate>20180319</ModDate><ModTime>14341800</ModTime><scaleRange><minScale>150000000</minScale><maxScale>5000</maxScale></scaleRange><ArcGISProfile>ItemDescription</ArcGISProfile></Esri><tool name="GeodesicDensification" displayname="Geodesic Densification" toolboxalias="Geodesic Densification" xmlns=""><arcToolboxHelpPath>c:\program files (x86)\arcgis\desktop10.5\Help\gp</arcToolboxHelpPath><parameters><param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Layer" expression="in_layer"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input Layer in current M&lt;/SPAN&gt;&lt;SPAN&gt;XD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="in_ellipsoid_name" displayname="Input Ellipsoid" type="Required" direction="Input" datatype="String" expression="WGS84 | 165 | ANS | CLARKE 1858 | International 1924 | GRS80 | WGS72"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose which ellipsoid you want to use to calculate geodesic lines.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="in_spacing" displayname="Maximum Point Spacing (m)" type="Required" direction="Input" datatype="String" expression="in_spacing"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose maximum point spacing for densified geometries.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param></parameters><summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a layer and presents the densified output as an in_memory layer for user to save or edit. Relies on geographiclib geodesic calculations.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary><usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input must be a layer in an ArcMap MXD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage></tool><dataIdInfo><idCitation><resTitle>Geodesic Densification</resTitle></idCitation><searchKeys><keyword>geodesic</keyword><keyword>densify</keyword><keyword>point</keyword><keyword>line</keyword><keyword>polygon</keyword><keyword>geographiclib</keyword></searchKeys><idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a layer and presents the densified output as an in_memory layer for user to save or edit. Relies on geographiclib geodesic calculations.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs></dataIdInfo><distInfo><distributor><distorFormat><formatName>ArcToolbox Tool</formatName></distorFormat></distributor></distInfo><mdHrLv><ScopeCd value="005"/></mdHrLv></metadata>
+<metadata xml:lang="en">
+    <Esri>
+        <CreaDate>20180315</CreaDate>
+        <CreaTime>12560300</CreaTime>
+        <ArcGISFormat>1.0</ArcGISFormat>
+        <SyncOnce>TRUE</SyncOnce>
+        <ModDate>20180319</ModDate>
+        <ModTime>14341800</ModTime>
+        <scaleRange>
+            <minScale>150000000</minScale>
+            <maxScale>5000</maxScale>
+        </scaleRange>
+        <ArcGISProfile>ItemDescription</ArcGISProfile>
+    </Esri>
+    <tool name="GeodesicDensification" displayname="Geodesic Densification" toolboxalias="Geodesic Densification" xmlns="">
+        <arcToolboxHelpPath>c:\program files (x86)\arcgis\desktop10.5\Help\gp</arcToolboxHelpPath>
+        <parameters>
+            <param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Layer" expression="in_layer">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input Layer in current M&lt;/SPAN&gt;&lt;SPAN&gt;XD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+            </param>
+            <param name="in_ellipsoid_name" displayname="Input Ellipsoid" type="Required" direction="Input" datatype="String" expression="WGS84 | 165 | ANS | CLARKE 1858 | International 1924 | GRS80 | WGS72">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose which ellipsoid you want to use to calculate geodesic lines.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+            </param>
+            <param name="in_spacing" displayname="Maximum Point Spacing (m)" type="Required" direction="Input" datatype="String" expression="in_spacing">
+                <dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose maximum point spacing for densified geometries.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+            </param>
+        </parameters>
+        <summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a layer and presents the densified output as an in_memory layer for user to save or edit. Relies on geographiclib geodesic calculations.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
+        <usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input must be a layer in an ArcMap MXD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage>
+    </tool>
+    <dataIdInfo>
+        <idCitation>
+            <resTitle>Geodesic Densification</resTitle>
+        </idCitation>
+        <searchKeys>
+            <keyword>geodesic</keyword>
+            <keyword>densify</keyword>
+            <keyword>point</keyword>
+            <keyword>line</keyword>
+            <keyword>polygon</keyword>
+            <keyword>geographiclib</keyword>
+        </searchKeys>
+        <idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a layer and presents the densified output as an in_memory layer for user to save or edit. Relies on geographiclib geodesic calculations.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+    </dataIdInfo>
+    <distInfo>
+        <distributor>
+            <distorFormat>
+                <formatName>ArcToolbox Tool</formatName>
+            </distorFormat>
+        </distributor>
+    </distInfo>
+    <mdHrLv>
+        <ScopeCd value="005"/>
+    </mdHrLv>
+</metadata>

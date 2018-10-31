@@ -1,1 +1,121 @@
-<metadata xml:lang="en"><Esri><CreaDate>20180315</CreaDate><CreaTime>12560300</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><ModDate>20181030</ModDate><ModTime>14422200</ModTime><scaleRange><minScale>150000000</minScale><maxScale>5000</maxScale></scaleRange><ArcGISProfile>ISO19139</ArcGISProfile><DataProperties><itemProps><imsContentType export="False"/></itemProps></DataProperties></Esri><tool name="GeodesicDensification_arcpy" displayname="Geodesic Densification using arcpy" toolboxalias="Geodesic Densification using arcpy" xmlns=""><arcToolboxHelpPath>c:\program files (x86)\arcgis\desktop10.5\Help\gp</arcToolboxHelpPath><parameters><param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Layer" expression="in_layer"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input Layer in current M&lt;/SPAN&gt;&lt;SPAN&gt;XD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="in_spacing" displayname="Maximum Point Spacing (m)" type="Required" direction="Input" datatype="Long" expression="in_spacing"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose maximum point spacing for densified geometries.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="dens_type_field" displayname="Field with densification type" type="Required" direction="Input" datatype="Field" expression="dens_type_field"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field that determines what type of densification to apply.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="dens_type_geodesic" displayname="Field value for Geodesic densification" type="Required" direction="Input" datatype="String" expression="dens_type_geodesic"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field value to use for GEODESIC or GEODETIC densification.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="dens_type_loxodrome" displayname="Field value for Loxodrome densification" type="Required" direction="Input" datatype="String" expression="dens_type_loxodrome"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field value to use for LOXODROME or RHUMB densification&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param><param name="out_path" displayname="output layer" type="Required" direction="Output" datatype="Layer" expression="out_path"><dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the output dataset (default is in your default or scratch Geodatabase).&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference></param></parameters><summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a &lt;/SPAN&gt;&lt;SPAN&gt;point &lt;/SPAN&gt;&lt;SPAN&gt;layer and &lt;/SPAN&gt;&lt;SPAN&gt;saves&lt;/SPAN&gt;&lt;SPAN&gt;the densified output &lt;/SPAN&gt;&lt;SPAN&gt;to default or scratch workspace.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary><usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input must be a layer in an ArcMap MXD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage></tool><dataIdInfo><idCitation xmlns=""><resTitle>Geodesic Densification using arcpy</resTitle><date><createDate>2018-10-30T00:00:00</createDate></date></idCitation><searchKeys><keyword>geodesic</keyword><keyword>geodetic</keyword><keyword>loxodrome</keyword><keyword>rhumb</keyword><keyword>densify</keyword><keyword>point</keyword><keyword>line</keyword><keyword>polygon</keyword></searchKeys><idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a &lt;/SPAN&gt;&lt;SPAN&gt;point &lt;/SPAN&gt;&lt;SPAN&gt;layer and &lt;/SPAN&gt;&lt;SPAN&gt;saves&lt;/SPAN&gt;&lt;SPAN&gt;the densified output &lt;/SPAN&gt;&lt;SPAN&gt;to default or scratch workspace.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs><dataLang><languageCode value="eng"/></dataLang><dataChar><CharSetCd value="004"/></dataChar><idPoC xmlns=""><rpIndName>Jonah Sullivan</rpIndName><rpOrgName>Geoscience Australia</rpOrgName><rpPosName>Maritime Jurisdiction Advisor</rpPosName><role><RoleCd value="011"/></role><displayName>Jonah Sullivan</displayName></idPoC><tpCat><TopicCatCd value="003"/></tpCat><tpCat><TopicCatCd value="008"/></tpCat><tpCat><TopicCatCd value="013"/></tpCat><tpCat><TopicCatCd value="015"/></tpCat></dataIdInfo><distInfo xmlns=""><distributor xmlns=""><distorFormat><formatName>ArcToolbox Tool</formatName></distorFormat></distributor></distInfo><mdHrLv><ScopeCd value="005"/></mdHrLv><mdLang><languageCode value="eng"/></mdLang><mdChar><CharSetCd value="004"/></mdChar><mdDateSt>20181030</mdDateSt><mdContact xmlns=""><rpIndName>Jonah Sullivan</rpIndName><rpOrgName>Geoscience Australia</rpOrgName><rpPosName>Maritime Jurisdiction Advisor</rpPosName><role><RoleCd value="011"/></role></mdContact><mdMaint xmlns=""><maintFreq><MaintFreqCd value="009"></MaintFreqCd></maintFreq></mdMaint></metadata>
+<metadata xml:lang="en">
+	<Esri>
+		<CreaDate>20180315</CreaDate>
+		<CreaTime>12560300</CreaTime>
+		<ArcGISFormat>1.0</ArcGISFormat>
+		<SyncOnce>TRUE</SyncOnce>
+		<ModDate>20181030</ModDate>
+		<ModTime>14422200</ModTime>
+		<scaleRange>
+			<minScale>150000000</minScale>
+			<maxScale>5000</maxScale>
+		</scaleRange>
+		<ArcGISProfile>ISO19139</ArcGISProfile>
+		<DataProperties>
+			<itemProps>
+				<imsContentType export="False"/>
+			</itemProps>
+		</DataProperties>
+	</Esri>
+	<tool name="GeodesicDensification_arcpy" displayname="Geodesic Densification using arcpy" toolboxalias="Geodesic Densification using arcpy" xmlns="">
+		<arcToolboxHelpPath>c:\program files (x86)\arcgis\desktop10.5\Help\gp</arcToolboxHelpPath>
+		<parameters>
+			<param name="in_layer" displayname="Input Layer" type="Required" direction="Input" datatype="Layer" expression="in_layer">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input Layer in current M&lt;/SPAN&gt;&lt;SPAN&gt;XD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+			<param name="in_spacing" displayname="Maximum Point Spacing (m)" type="Required" direction="Input" datatype="Long" expression="in_spacing">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose maximum point spacing for densified geometries.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+			<param name="dens_type_field" displayname="Field with densification type" type="Required" direction="Input" datatype="Field" expression="dens_type_field">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field that determines what type of densification to apply.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+			<param name="dens_type_geodesic" displayname="Field value for Geodesic densification" type="Required" direction="Input" datatype="String" expression="dens_type_geodesic">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field value to use for GEODESIC or GEODETIC densification.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+			<param name="dens_type_loxodrome" displayname="Field value for Loxodrome densification" type="Required" direction="Input" datatype="String" expression="dens_type_loxodrome">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the field value to use for LOXODROME or RHUMB densification&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+			<param name="out_path" displayname="output layer" type="Required" direction="Output" datatype="Layer" expression="out_path">
+				<dialogReference>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Choose the output dataset (default is in your default or scratch Geodatabase).&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;</dialogReference>
+			</param>
+		</parameters>
+		<summary>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a &lt;/SPAN&gt;&lt;SPAN&gt;point &lt;/SPAN&gt;&lt;SPAN&gt;layer and &lt;/SPAN&gt;&lt;SPAN&gt;saves&lt;/SPAN&gt;&lt;SPAN&gt;the densified output &lt;/SPAN&gt;&lt;SPAN&gt;to default or scratch workspace.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</summary>
+		<usage>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Input must be a layer in an ArcMap MXD&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</usage>
+	</tool>
+	<dataIdInfo>
+		<idCitation xmlns="">
+			<resTitle>Geodesic Densification using arcpy</resTitle>
+			<date>
+				<createDate>2018-10-30T00:00:00</createDate>
+			</date>
+		</idCitation>
+		<searchKeys>
+			<keyword>geodesic</keyword>
+			<keyword>geodetic</keyword>
+			<keyword>loxodrome</keyword>
+			<keyword>rhumb</keyword>
+			<keyword>densify</keyword>
+			<keyword>point</keyword>
+			<keyword>line</keyword>
+			<keyword>polygon</keyword>
+		</searchKeys>
+		<idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Densifies a &lt;/SPAN&gt;&lt;SPAN&gt;point &lt;/SPAN&gt;&lt;SPAN&gt;layer and &lt;/SPAN&gt;&lt;SPAN&gt;saves&lt;/SPAN&gt;&lt;SPAN&gt;the densified output &lt;/SPAN&gt;&lt;SPAN&gt;to default or scratch workspace.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
+		<dataLang>
+			<languageCode value="eng"/>
+		</dataLang>
+		<dataChar>
+			<CharSetCd value="004"/>
+		</dataChar>
+		<idPoC xmlns="">
+			<rpIndName>Jonah Sullivan</rpIndName>
+			<rpOrgName>Geoscience Australia</rpOrgName>
+			<rpPosName>Maritime Jurisdiction Advisor</rpPosName>
+			<role>
+				<RoleCd value="011"/>
+			</role>
+			<displayName>Jonah Sullivan</displayName>
+		</idPoC>
+		<tpCat>
+			<TopicCatCd value="003"/>
+		</tpCat>
+		<tpCat>
+			<TopicCatCd value="008"/>
+		</tpCat>
+		<tpCat>
+			<TopicCatCd value="013"/>
+		</tpCat>
+		<tpCat>
+			<TopicCatCd value="015"/>
+		</tpCat>
+	</dataIdInfo>
+	<distInfo xmlns="">
+		<distributor xmlns="">
+			<distorFormat>
+				<formatName>ArcToolbox Tool</formatName>
+			</distorFormat>
+		</distributor>
+	</distInfo>
+	<mdHrLv>
+		<ScopeCd value="005"/>
+	</mdHrLv>
+	<mdLang>
+		<languageCode value="eng"/>
+	</mdLang>
+	<mdChar>
+		<CharSetCd value="004"/>
+	</mdChar>
+	<mdDateSt>20181030</mdDateSt>
+	<mdContact xmlns="">
+		<rpIndName>Jonah Sullivan</rpIndName>
+		<rpOrgName>Geoscience Australia</rpOrgName>
+		<rpPosName>Maritime Jurisdiction Advisor</rpPosName>
+		<role>
+			<RoleCd value="011"/>
+		</role>
+	</mdContact>
+	<mdMaint xmlns="">
+		<maintFreq>
+			<MaintFreqCd value="009"/>
+		</maintFreq>
+	</mdMaint>
+</metadata>

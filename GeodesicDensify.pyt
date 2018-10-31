@@ -1,5 +1,6 @@
-import sys
 import os
+import sys
+
 import arcpy
 
 scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
@@ -110,7 +111,7 @@ class GeodesicDensification_arcpy(object):
         parameter.  This method is called after internal validation."""
         return
 
-    def execute(self, parameters, messages):
+    def execute(parameters, messages):
         """The source code of the tool."""
         import math
         import os
@@ -127,14 +128,13 @@ class GeodesicDensification_arcpy(object):
         geodesic_field_value = parameters[3].valueAsText
         loxodrome_field_value = parameters[4].valueAsText
         
-        def densify_points(in_layer, out_layer, spacing, dens_field, point_type_field):
+        def densify_points(in_layer, out_layer, spacing, dens_field):
             counter = 0
             current_point = arcpy.Point()
             in_field_names = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(in_layer)]
             geom_field_index = in_field_names.index('SHAPE@')
             dens_field_index = in_field_names.index(dens_field)
             current_dens_type = None
-            current_row = None
             # cursor to write output layer
             cur = arcpy.da.InsertCursor(out_layer, "*")
             # loop through the features densify
@@ -164,7 +164,6 @@ class GeodesicDensification_arcpy(object):
                         row_list.append('Original')
                         row = tuple(row_list)
                         cur.insertRow(row)
-                        current_row = row
 
                     # This is for subsequent points
                     elif counter > 0:
@@ -213,7 +212,6 @@ class GeodesicDensification_arcpy(object):
                         row_list.append('Original')
                         row = tuple(row_list)
                         cur.insertRow(row)
-                        current_row = row
                     counter += 1
             if cur:
                 del cur
@@ -228,16 +226,16 @@ class GeodesicDensification_arcpy(object):
 
             # add field for pointType (original or densified)
             fields = arcpy.ListFields(in_layer)
-            fieldNameList = [field.name for field in fields]
-            pointTypeField = ''
+            field_name_list = [field.name for field in fields]
+            point_type_field = ''
             for fieldName in ["pointType", "pntType", "pntTyp"]:
-                if fieldName not in fieldNameList:
-                    pointTypeField = fieldName
+                if fieldName not in field_name_list:
+                    point_type_field = fieldName
                     break
-            arcpy.AddField_management(out_layer_abspath, pointTypeField, "TEXT", field_length=50)
+            arcpy.AddField_management(out_layer_abspath, point_type_field, "TEXT", field_length=50)
 
             # run the densification
-            densify_points(in_layer, out_layer_abspath, spacing, dens_field, pointTypeField)
+            densify_points(in_layer, out_layer_abspath, spacing, dens_field)
 
         # add output layer to map TOC
         mxd = arcpy.mapping.MapDocument("CURRENT")

@@ -115,6 +115,7 @@ class GeodesicDensification_arcpy(object):
         """The source code of the tool."""
         import math
         import os
+        import arcpy
 
         # set default values
         out_layer_path = arcpy.env.scratchWorkspace
@@ -238,8 +239,28 @@ class GeodesicDensification_arcpy(object):
             densify_points(in_layer, out_layer_abspath, spacing, dens_field)
 
         # add output layer to map TOC
-        mxd = arcpy.mapping.MapDocument("CURRENT")
-        data_frame = arcpy.mapping.ListDataFrames(mxd)[0]
-        layer = arcpy.mapping.Layer(os.path.join(out_layer_path, out_layer_name))
-        arcpy.mapping.AddLayer(data_frame, layer, "AUTO_ARRANGE")
+        
+        # determine ArcMap or ArcPro
+        arc_version = None
+        try:
+            import arcpy.mapping
+            arc_version = "ArcMap"
+        except ImportError as error:
+            try:
+                import arcpy.mp
+                arc_version = "ArcPro"
+            except ImportError as error:
+                arcpy.AddMessage(error)
+                
+        if arc_version == "ArcMap":
+        #ArcMap method
+            mxd = arcpy.mapping.MapDocument("CURRENT")
+            data_frame = arcpy.mapping.ListDataFrames(mxd)[0]
+            layer = arcpy.mapping.Layer(os.path.join(out_layer_path, out_layer_name))
+            arcpy.mapping.AddLayer(data_frame, layer, "AUTO_ARRANGE")
+        #ArcPro method
+        if arc_version == "ArcPro":
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            map = aprx.listMaps()[0]
+            map.addDataFromPath(os.path.join(out_layer_path, out_layer_name))
         arcpy.GetMessages()

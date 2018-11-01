@@ -111,7 +111,7 @@ class GeodesicDensification_arcpy(object):
         parameter.  This method is called after internal validation."""
         return
 
-    def execute(parameters, messages):
+    def execute(self, parameters, messages):
         """The source code of the tool."""
         import math
         import os

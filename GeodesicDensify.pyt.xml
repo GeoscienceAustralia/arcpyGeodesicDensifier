@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <metadata xml:lang="en">
 	<Esri>
 		<CreaDate>20181025</CreaDate>
@@ -5,8 +6,8 @@
 		<ArcGISFormat>1.0</ArcGISFormat>
 		<ArcGISstyle>ISO 19139 Metadata Implementation Specification</ArcGISstyle>
 		<SyncOnce>TRUE</SyncOnce>
-		<ModDate>20181030</ModDate>
-		<ModTime>14451700</ModTime>
+		<ModDate>20191011</ModDate>
+		<ModTime>110154</ModTime>
 		<scaleRange>
 			<minScale>150000000</minScale>
 			<maxScale>5000</maxScale>
@@ -19,11 +20,11 @@
 		</DataProperties>
 	</Esri>
 	<toolbox name="GeodesicDensify" alias="Geodesic Densification using arcpy">
-		<arcToolboxHelpPath>c:\program files (x86)\arcgis\desktop10.5\Help\gp</arcToolboxHelpPath>
-	</toolbox>
+		<arcToolboxHelpPath>c:\program files\arcgis\pro\Resources\Help\gp</arcToolboxHelpPath>
+		<toolsets/></toolbox>
 	<dataIdInfo>
 		<idCitation xmlns="">
-			<resTitle>Geodesic Densification Python Toolbox</resTitle>
+			<resTitle>GeodesicDensify</resTitle>
 		</idCitation>
 		<idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN&gt;Python toolbox to densify points along geodesic or loxodrome lines.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;</idAbs>
 		<dataLang>

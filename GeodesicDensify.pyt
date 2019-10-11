@@ -1,12 +1,13 @@
 import os
 import sys
-
 import arcpy
+
 
 scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
 sys.path.append(scripts_dir)
 # Do not compile .pyc files for the tool modules.
 sys.dont_write_bytecode = True
+
 
 class Toolbox(object):
     def __init__(self):
@@ -129,17 +130,17 @@ class GeodesicDensification_arcpy(object):
         geodesic_field_value = parameters[3].valueAsText
         loxodrome_field_value = parameters[4].valueAsText
         
-        def densify_points(in_layer, out_layer, spacing, dens_field):
+        def densify_points(input_layer, out_layer, dens_spacing, dens_type_field):
             counter = 0
             current_point = arcpy.Point()
-            in_field_names = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(in_layer)]
+            in_field_names = ['SHAPE@' if f.type == 'Geometry' else f.name for f in arcpy.ListFields(input_layer)]
             geom_field_index = in_field_names.index('SHAPE@')
-            dens_field_index = in_field_names.index(dens_field)
+            dens_field_index = in_field_names.index(dens_type_field)
             current_dens_type = None
             # cursor to write output layer
             cur = arcpy.da.InsertCursor(out_layer, "*")
             # loop through the features densify
-            with arcpy.da.SearchCursor(in_layer, in_field_names) as cursor:
+            with arcpy.da.SearchCursor(input_layer, in_field_names) as cursor:
                 for row in cursor:
 
                     # get the Densification type
@@ -168,20 +169,23 @@ class GeodesicDensification_arcpy(object):
 
                     # This is for subsequent points
                     elif counter > 0:
-                        start_pt = current_point
-                        start_ptgeom = arcpy.PointGeometry(start_pt, in_srs)
-                        next_pt_geom = row[geom_field_index]
-                        next_pt = next_pt_geom.getPart()
-                        next_ptgeom = arcpy.PointGeometry(next_pt, in_srs)
+                        start_point = current_point
+                        start_point_geometry = arcpy.PointGeometry(start_point, in_srs)
+                        next_point_geometry = row[geom_field_index]
+                        next_point = next_point_geometry.getPart()
+                        next_point_geometry = arcpy.PointGeometry(next_point, in_srs)
                         if current_dens_type is not None:  # densify if loxodrome or geodesic
-                            angle, distance = start_ptgeom.angleAndDistanceTo(next_ptgeom, current_dens_type)
+                            angle, distance = start_point_geometry.angleAndDistanceTo(next_point_geometry,
+                                                                                      current_dens_type)
                             # determine how many densified segments there will be
-                            segment_count = int(math.ceil(distance / float(spacing)))
+                            segment_count = int(math.ceil(distance / float(dens_spacing)))
                             # adjust the spacing distance
-                            seglen = distance / segment_count
+                            segment_length = distance / segment_count
                             # find every waypoint along segment
                             for i in range(1, segment_count):
-                                waypoint = start_ptgeom.pointFromAngleAndDistance(angle, seglen * i, current_dens_type)
+                                waypoint = start_point_geometry.pointFromAngleAndDistance(angle,
+                                                                                          segment_length * i,
+                                                                                          current_dens_type)
                                 point = arcpy.Point(waypoint.extent.XMax, waypoint.extent.YMax)
                                 current_point.X = point.X
                                 current_point.Y = point.Y
@@ -192,20 +196,20 @@ class GeodesicDensification_arcpy(object):
                                 out_row = tuple(row_list)
                                 cur.insertRow(out_row)
                             # save point geometry for the next point
-                            current_point.X = next_pt.X
-                            current_point.Y = next_pt.Y
+                            current_point.X = next_point.X
+                            current_point.Y = next_point.Y
                             # save the densification type for the next point
                             current_dens_type = dens_type
                         else:  # don't densify if not loxodrome or geodesic, just copy the point
                             # write to output layer
                             row_list = list(row)
                             row_list.append("not densified")
-                            row_list[geom_field_index] = next_pt_geom
+                            row_list[geom_field_index] = next_point_geometry
                             out_row = tuple(row_list)
                             cur.insertRow(out_row)
                             # save point geometry for the next point
-                            current_point.X = next_pt.X
-                            current_point.Y = next_pt.Y
+                            current_point.X = next_point.X
+                            current_point.Y = next_point.Y
                             # save the densification type for the next point
                             current_dens_type = dens_type
                         # write the last point 
@@ -223,7 +227,11 @@ class GeodesicDensification_arcpy(object):
         arcpy.env.overwriteOutput = True
         if desc.featureType == "Simple" and desc.datasetType == "FeatureClass":
             # create output layer
-            arcpy.CreateFeatureclass_management(out_layer_path, out_layer_name, "POINT", in_layer, spatial_reference=in_srs)
+            arcpy.CreateFeatureclass_management(out_layer_path,
+                                                out_layer_name,
+                                                "POINT",
+                                                in_layer,
+                                                spatial_reference=in_srs)
 
             # add field for pointType (original or densified)
             fields = arcpy.ListFields(in_layer)
@@ -233,7 +241,10 @@ class GeodesicDensification_arcpy(object):
                 if fieldName not in field_name_list:
                     point_type_field = fieldName
                     break
-            arcpy.AddField_management(out_layer_abspath, point_type_field, "TEXT", field_length=50)
+            arcpy.AddField_management(out_layer_abspath,
+                                      point_type_field,
+                                      "TEXT",
+                                      field_length=50)
 
             # run the densification
             densify_points(in_layer, out_layer_abspath, spacing, dens_field)
@@ -253,14 +264,14 @@ class GeodesicDensification_arcpy(object):
                 arcpy.AddMessage(error)
                 
         if arc_version == "ArcMap":
-        #ArcMap method
+            # ArcMap method
             mxd = arcpy.mapping.MapDocument("CURRENT")
             data_frame = arcpy.mapping.ListDataFrames(mxd)[0]
             layer = arcpy.mapping.Layer(os.path.join(out_layer_path, out_layer_name))
             arcpy.mapping.AddLayer(data_frame, layer, "AUTO_ARRANGE")
-        #ArcPro method
         if arc_version == "ArcPro":
-            aprx = arcpy.mp.ArcGISProject("CURRENT")
-            map = aprx.listMaps()[0]
-            map.addDataFromPath(os.path.join(out_layer_path, out_layer_name))
+            # ArcPro method
+            project = arcpy.mp.ArcGISProject("CURRENT")
+            project_map = project.listMaps()[0]
+            project_map.addDataFromPath(os.path.join(out_layer_path, out_layer_name))
         arcpy.GetMessages()
